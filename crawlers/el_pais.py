@@ -24,14 +24,14 @@ def get_comments():
     article_links = list(set(article_links))
 
     try:
-        with open("article_links.txt", "r") as txt:
+        with open("../crawlers/article_links.txt", "r") as txt:
             previous_links = txt.read().splitlines()
     except IOError:
         previous_links = []
 
     unique_links = list(set(article_links) - set(previous_links))
 
-    with open("article_links.txt", "a+") as txt:
+    with open("../crawlers/article_links.txt", "a+") as txt:
         for link in unique_links:
             txt.write("%s\n" % link)
 
@@ -55,11 +55,11 @@ def get_comments():
             for comment in comments_find:
                 comments.append(comment.get_text().strip())
 
-    with open("comments.txt", "a+") as txt:
+    with open("../crawlers/comments.txt", "a+") as txt:
         for comment in comments:
             txt.write("%s\n" % comment)
 
-    with open("comments.txt", "r") as txt:
+    with open("../crawlers/comments.txt", "r") as txt:
         comments_text = txt.read()
 
     return previous_links, comments_text
