@@ -35,7 +35,7 @@ def get_comments():
         for link in unique_links:
             txt.write("%s\n" % link)
 
-    article_links.extend(unique_links)
+    previous_links.extend(unique_links)
 
     comments = []
     with requests.Session() as session:
@@ -62,4 +62,4 @@ def get_comments():
     with open("comments.txt", "r") as txt:
         comments_text = txt.read()
 
-    return article_links, comments_text
+    return previous_links, comments_text
