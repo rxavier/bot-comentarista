@@ -14,11 +14,11 @@ def get_tweet(sentences=1, new=True, tweet=True):
         model = markovify.NewlineText(comments_text)
 
         model_json = model.to_json()
-        with open("model.json", "w") as f:
+        with open("../generator/model.json", "w") as f:
             json.dump(model_json, f)
 
     else:
-        with open("model.json", "r") as f:
+        with open("../generator/model.json", "r") as f:
             model_json = json.load(f)
         model = markovify.NewlineText.from_json(model_json)
 
