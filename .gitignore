@@ -2,3 +2,5 @@
 \.idea/
 
 crawlers/__pycache__/
+
+generator/__pycache__/
