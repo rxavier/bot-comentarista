@@ -1,4 +1,5 @@
 import requests
+import re
 from bs4 import BeautifulSoup
 
 base_url = "https://www.elpais.com.uy"
@@ -7,6 +8,8 @@ base_comment_url = "https://www.elpais.com.uy/comment/threads/article-"
 
 username = "user"
 password = "pass"
+
+spam = "Este comentario se ha marcado como spam."
 
 
 def get_comments():
@@ -53,13 +56,22 @@ def get_comments():
             comments_find = comments_soup.find_all("div", {"class": "comment-text"})
 
             for comment in comments_find:
-                comments.append(comment.get_text().strip())
+
+                comment_1 = re.sub("\r", "", comment.get_text().strip())
+
+                if comment_1 != spam:
+                    comment_2 = re.sub("\n+", ". ", comment_1)
+                    comment_3 = re.sub(r'\s([?.!"](?:\s|$))', r'\1', comment_2)
+
+                    if re.search("[.!?\\-]", comment_3[-1]) is None:
+                        comment_parse = comment_3 + "."
+                    else:
+                        comment_parse = comment_3
+
+                    comments.append(comment_parse)
 
     with open("../crawlers/comments.txt", "a+") as txt:
         for comment in comments:
             txt.write("%s\n" % comment)
 
-    with open("../crawlers/comments.txt", "r") as txt:
-        comments_text = txt.read()
-
-    return previous_links, comments_text
+    return previous_links, comments
