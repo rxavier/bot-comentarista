@@ -62,11 +62,12 @@ def get_comments():
                 if comment_1 != spam:
                     comment_2 = re.sub("\n+", ". ", comment_1)
                     comment_3 = re.sub(r'\s([?.!"](?:\s|$))', r'\1', comment_2)
+                    comment_4 = re.sub("(?<=[!?:\\-])\\.", "", comment_3)
 
-                    if re.search("[.!?\\-]", comment_3[-1]) is None:
-                        comment_parse = comment_3 + "."
+                    if re.search("[.!:?\\-]", comment_3[-1]) is None:
+                        comment_parse = comment_4 + "."
                     else:
-                        comment_parse = comment_3
+                        comment_parse = comment_4
 
                     comments.append(comment_parse)
 
