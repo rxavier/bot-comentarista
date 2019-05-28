@@ -12,7 +12,7 @@ password = "pass"
 spam = "Este comentario se ha marcado como spam."
 
 
-def get_comments():
+def get_comments(save=True):
 
     article_links = []
     for page in range(1, 11):
@@ -79,8 +79,9 @@ def get_comments():
                     parsed_comments.append(comment_process)
                     raw_comments.append(comment_process_1)
 
-    with open("../crawlers/comments.txt", "a+") as txt:
-        for comment in comments:
-            txt.write("%s\n" % comment)
+    if save is True:
+        with open("../crawlers/comments.txt", "a+") as txt:
+            for comment in parsed_comments:
+                txt.write("%s\n" % comment)
 
     return previous_links, parsed_comments, raw_comments
