@@ -11,6 +11,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 
-def make_tweet():
-    tweet = generator.get_tweet(new=False)
+def make_tweet(new=True):
+    tweet = generator.get_tweet(new=new)
     api.update_status(tweet)
+    print("Tweeted " + tweet)
