@@ -57,19 +57,27 @@ def get_comments():
 
             for comment in comments_find:
 
-                comment_1 = re.sub("\r", "", comment.get_text().strip())
+                comment_process = re.sub("\r", "", comment.get_text().strip())
 
-                if comment_1 != spam:
-                    comment_2 = re.sub("\n+", ". ", comment_1)
-                    comment_3 = re.sub(r'\s([?.!"](?:\s|$))', r'\1', comment_2)
-                    comment_4 = re.sub("(?<=[!?:\\-])\\.", "", comment_3)
+                if comment_process != spam:
+                    """Replace newlines with period and space"""
+                    comment_process = re.sub("\n+", ".", comment_process)
+                    """Add space after any punctuation if missing"""
+                    comment_process = re.sub("(?<=[?.!:,])(?=[^\\s])", " ", comment_process)
+                    """Remove leading space before punctuation"""
+                    comment_process = re.sub(r'\s([?.!¿¡,](?:\s|$))', r'\1', comment_process)
+                    """Remove period following any kind of punctuation"""
+                    comment_process = re.sub("(?<=[?.!¿¡,])\\.(?<![.])", "", comment_process)
+                    """Add space after ellipsis if missing"""
+                    comment_process = re.sub("\\.{2-3}(?!\\s)", "... ", comment_process)
 
-                    if re.search("[.!:?\\-]", comment_3[-1]) is None:
-                        comment_parse = comment_4 + "."
+                    """End string with period if not available"""
+                    if re.search("[.!:?\\-]", comment_process[-1]) is None:
+                        comment_parsed = comment_process + "."
                     else:
-                        comment_parse = comment_4
+                        comment_parsed = comment_process
 
-                    comments.append(comment_parse)
+                    comments.append(comment_parsed)
 
     with open("../crawlers/comments.txt", "a+") as txt:
         for comment in comments:
