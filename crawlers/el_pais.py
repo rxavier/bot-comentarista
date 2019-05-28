@@ -12,7 +12,7 @@ password = "pass"
 spam = "Este comentario se ha marcado como spam."
 
 
-def get_comments():
+def get_comments(save=True):
 
     article_links = []
     for page in range(1, 11):
@@ -40,7 +40,8 @@ def get_comments():
 
     previous_links.extend(unique_links)
 
-    comments = []
+    raw_comments = []
+    parsed_comments = []
     with requests.Session() as session:
         session.post("https://sso.elpais.com.uy/cas/login", data={"username": username, "password": password})
 
@@ -57,21 +58,30 @@ def get_comments():
 
             for comment in comments_find:
 
-                comment_1 = re.sub("\r", "", comment.get_text().strip())
+                comment_process_1 = re.sub("\r", "", comment.get_text().strip())
 
-                if comment_1 != spam:
-                    comment_2 = re.sub("\n+", ". ", comment_1)
-                    comment_3 = re.sub(r'\s([?.!"](?:\s|$))', r'\1', comment_2)
+                if comment_process_1 != spam:
+                    """Replace newlines with period and space"""
+                    comment_process = re.sub("\n+", ".", comment_process_1)
+                    """Add space after any punctuation if missing"""
+                    comment_process = re.sub("(?<=[?.!:,;])(?=[^\\s])(?![.!?])", " ", comment_process)
+                    """Remove space before punctuation"""
+                    comment_process = re.sub(r'\s([?.!,;]+(?:\s|$))', r'\1', comment_process)
+                    """Remove period following any kind of punctuation"""
+                    comment_process = re.sub("(?<=[?!¿¡,;])\\.(?![.])", "", comment_process)
+                    """Add space after ellipsis if missing"""
+                    comment_process = re.sub("\\.{2-3}(?!\\s)", "... ", comment_process)
 
-                    if re.search("[.!?\\-]", comment_3[-1]) is None:
-                        comment_parse = comment_3 + "."
-                    else:
-                        comment_parse = comment_3
+                    """End string with period if not available"""
+                    if re.search("[.!:?\\-]", comment_process[-1]) is None:
+                        comment_process = comment_process + "."
 
-                    comments.append(comment_parse)
+                    parsed_comments.append(comment_process)
+                    raw_comments.append(comment_process_1)
 
-    with open("../crawlers/comments.txt", "a+") as txt:
-        for comment in comments:
-            txt.write("%s\n" % comment)
+    if save is True:
+        with open("../crawlers/comments.txt", "a+") as txt:
+            for comment in parsed_comments:
+                txt.write("%s\n" % comment)
 
-    return previous_links, comments
+    return previous_links, parsed_comments, raw_comments
