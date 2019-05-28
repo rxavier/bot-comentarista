@@ -40,7 +40,8 @@ def get_comments():
 
     previous_links.extend(unique_links)
 
-    comments = []
+    raw_comments = []
+    parsed_comments = []
     with requests.Session() as session:
         session.post("https://sso.elpais.com.uy/cas/login", data={"username": username, "password": password})
 
@@ -57,11 +58,11 @@ def get_comments():
 
             for comment in comments_find:
 
-                comment_process = re.sub("\r", "", comment.get_text().strip())
+                comment_process_1 = re.sub("\r", "", comment.get_text().strip())
 
-                if comment_process != spam:
+                if comment_process_1 != spam:
                     """Replace newlines with period and space"""
-                    comment_process = re.sub("\n+", ".", comment_process)
+                    comment_process = re.sub("\n+", ".", comment_process_1)
                     """Add space after any punctuation if missing"""
                     comment_process = re.sub("(?<=[?.!:,;])(?=[^\\s])(?![.!?])", " ", comment_process)
                     """Remove space before punctuation"""
@@ -73,14 +74,13 @@ def get_comments():
 
                     """End string with period if not available"""
                     if re.search("[.!:?\\-]", comment_process[-1]) is None:
-                        comment_parsed = comment_process + "."
-                    else:
-                        comment_parsed = comment_process
+                        comment_process = comment_process + "."
 
-                    comments.append(comment_parsed)
+                    parsed_comments.append(comment_process)
+                    raw_comments.append(comment_process_1)
 
     with open("../crawlers/comments.txt", "a+") as txt:
         for comment in comments:
             txt.write("%s\n" % comment)
 
-    return previous_links, comments
+    return previous_links, parsed_comments, raw_comments
