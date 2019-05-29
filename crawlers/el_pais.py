@@ -64,7 +64,8 @@ def get_comments(save=True):
                     """Replace newlines with period and space"""
                     comment_process = re.sub("\n+", ".", comment_process_1)
                     """Add space after any punctuation if missing"""
-                    comment_process = re.sub("(?<=[?.!:,;])(?=[^\\s])(?![.!?])", " ", comment_process)
+                    comment_process = re.sub("(?<=[?.!:,;])(?=[^\\s])(?![.!?/0-9]|com|org|net|gub|edu|uy|blogspot)",
+                                             " ", comment_process)
                     """Remove space before punctuation"""
                     comment_process = re.sub(r'\s([?.!,;]+(?:\s|$))', r'\1', comment_process)
                     """Remove period following any kind of punctuation"""
