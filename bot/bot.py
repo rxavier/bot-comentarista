@@ -1,4 +1,6 @@
 import tweepy
+import markovify
+import json
 from generator import generator
 
 consumer_key = "consumer_key"
@@ -11,7 +13,17 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 
-def make_tweet(new=True):
-    tweet = generator.get_tweet(new=new)
+def make_tweet(new=False):
+
+    if new is True:
+        model = generator.make_model()
+
+    else:
+        with open("../generator/model.json", "r") as f:
+            model_json = json.load(f)
+        model = markovify.NewlineText.from_json(model_json)
+
+    tweet = model.make_short_sentence(280)
+
     api.update_status(tweet)
-    print("Tweeted " + tweet)
+    print("Tweeted: " + tweet)
