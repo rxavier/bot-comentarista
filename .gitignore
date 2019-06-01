@@ -4,3 +4,9 @@
 crawlers/__pycache__/
 
 generator/__pycache__/
+
+crawlers/article_links\.txt
+
+crawlers/comments\.txt
+
+generator/model\.json
