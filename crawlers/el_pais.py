@@ -1,5 +1,6 @@
 import requests
 import re
+from crawlers import text_parser
 from bs4 import BeautifulSoup
 
 base_url = "https://www.elpais.com.uy"
@@ -58,27 +59,13 @@ def get_comments(save=True):
 
             for comment in comments_find:
 
-                comment_process_1 = re.sub("\r", "", comment.get_text().strip())
+                raw = re.sub("\r", "", comment.get_text().strip())
 
-                if comment_process_1 != spam:
-                    """Replace newlines with period and space"""
-                    comment_process = re.sub("\n+", ".", comment_process_1)
-                    """Add space after any punctuation if missing"""
-                    comment_process = re.sub("(?<=[?.!:,;])(?=[^\\s])(?![.!?/0-9]|com|org|net|gub|edu|uy|blogspot)",
-                                             " ", comment_process)
-                    """Remove space before punctuation"""
-                    comment_process = re.sub(r'\s([?.!,;]+(?:\s|$))', r'\1', comment_process)
-                    """Remove period following any kind of punctuation"""
-                    comment_process = re.sub("(?<=[?!¿¡,;])\\.(?![.])", "", comment_process)
-                    """Add space after ellipsis if missing"""
-                    comment_process = re.sub("\\.{2-3}(?!\\s)", "... ", comment_process)
+                if raw != spam:
+                    processed = text_parser.sanitizer(raw)
 
-                    """End string with period if not available"""
-                    if re.search("[.!:?\\-]", comment_process[-1]) is None:
-                        comment_process = comment_process + "."
-
-                    parsed_comments.append(comment_process)
-                    raw_comments.append(comment_process_1)
+                    parsed_comments.append(processed)
+                    raw_comments.append(raw)
 
     if save is True:
         with open("../crawlers/comments.txt", "a+") as txt:
