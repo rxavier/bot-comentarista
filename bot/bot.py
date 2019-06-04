@@ -14,6 +14,8 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
+handle = api.me().screen_name
+
 
 def make_tweet(update_model=False, update_status=True):
 
@@ -34,7 +36,7 @@ def make_tweet(update_model=False, update_status=True):
     return tweet
 
 
-def fulfill_request():
+def fulfill_request(hashtag="generar"):
 
     last_reply_id = None
     for status in tweepy.Cursor(api.home_timeline).items(50):
