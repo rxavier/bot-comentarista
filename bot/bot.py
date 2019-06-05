@@ -2,13 +2,13 @@ import tweepy
 import markovify
 import json
 import time
+import local_settings
 from generator import generator
 
-consumer_key = "consumer_key"
-consumer_secret = "consumer_secret"
-access_token = "access_token"
-access_token_secret = "access_token_secret"
-
+consumer_key = local_settings.credentials["consumer_key"]
+consumer_secret = local_settings.credentials["consumer_secret"]
+access_token = local_settings.credentials["access_token"]
+access_token_secret = local_settings.credentials["access_token_secret"]
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)

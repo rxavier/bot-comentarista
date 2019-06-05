@@ -1,5 +1,6 @@
 import requests
 import re
+import local_settings
 from crawlers import text_parser
 from bs4 import BeautifulSoup
 
@@ -7,8 +8,8 @@ base_url = "https://www.elpais.com.uy"
 info_url = "https://www.elpais.com.uy/page/listado-informacion.html?page="
 base_comment_url = "https://www.elpais.com.uy/comment/threads/article-"
 
-username = "user"
-password = "pass"
+username = local_settings.credentials["username"]
+password = local_settings.credentials["password"]
 
 spam = "Este comentario se ha marcado como spam."
 
