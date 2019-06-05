@@ -10,3 +10,5 @@ crawlers/article_links\.txt
 crawlers/comments\.txt
 
 generator/model\.json
+
+aws_tweets/__pycache__/
