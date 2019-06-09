@@ -12,3 +12,5 @@ crawlers/comments\.txt
 generator/model\.json
 
 local_settings\.py
+
+__pycache__/
