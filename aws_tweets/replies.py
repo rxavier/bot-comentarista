@@ -34,27 +34,28 @@ def make_tweet(update_status=True):
 
 def fulfill_request(search_term="#focatweet OR #focatuit"):
 
-    last_reply_id = None
+    past_replies = []
     for status in tweepy.Cursor(api.home_timeline).items(50):
         if status.in_reply_to_status_id is not None:
-            last_reply_id = status.in_reply_to_status_id
-            break
+            past_replies.append(status.in_reply_to_status_id)
         else:
             pass
 
-    if last_reply_id is not None:
+    try:
+        last_reply_id = past_replies[0]
         cursor = tweepy.Cursor(api.search, q=f"@{handle} -filter:retweets + {search_term}",
                                since_id=last_reply_id).items(50)
-    else:
+    except IndexError:
         cursor = tweepy.Cursor(api.search, q=f"@{handle} -filter:retweets + {search_term}").items(50)
 
     replied_users = []
-    for reply in cursor:
+    for request in cursor:
 
-        request_reply = make_tweet(update_status=False)
-        api.update_status(request_reply, in_reply_to_status_id=reply.id, auto_populate_reply_metadata=True)
-        replied_users.append(reply.user.screen_name)
-        time.sleep(10)
+        if request.id not in past_replies:
+            request_reply = make_tweet(update_status=False)
+            api.update_status(request_reply, in_reply_to_status_id=request.id, auto_populate_reply_metadata=True)
+            replied_users.append(request.user.screen_name)
+            time.sleep(3)
 
     return replied_users
 
