@@ -12,3 +12,7 @@ crawlers/comments\.txt
 generator/model\.json
 
 aws_tweets/__pycache__/
+
+local_settings\.py
+
+__pycache__/
