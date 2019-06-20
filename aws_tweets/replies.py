@@ -43,10 +43,10 @@ def fulfill_request(search_term="#focatweet OR #focatuit"):
 
     try:
         last_reply_id = past_replies[0]
-        cursor = tweepy.Cursor(api.search, q=f"@{handle} -filter:retweets + {search_term}",
+        cursor = tweepy.Cursor(api.search, q=f"{search_term} -filter:retweets",
                                since_id=last_reply_id).items(50)
     except IndexError:
-        cursor = tweepy.Cursor(api.search, q=f"@{handle} -filter:retweets + {search_term}").items(50)
+        cursor = tweepy.Cursor(api.search, q=f"{search_term} -filter:retweets").items(50)
 
     replied_users = []
     for request in cursor:
