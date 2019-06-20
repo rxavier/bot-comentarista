@@ -35,7 +35,7 @@ def make_tweet(update_status=True):
 def fulfill_request(search_term="#focatweet OR #focatuit"):
 
     past_replies = []
-    for status in tweepy.Cursor(api.home_timeline).items(50):
+    for status in tweepy.Cursor(api.home_timeline).items(200):
         if status.in_reply_to_status_id is not None:
             past_replies.append(status.in_reply_to_status_id)
         else:
